@@ -11,6 +11,7 @@ permissions:
   id-token: write
   actions: read
 
+
 jobs:
   upload:
     name: Upload to Codecov
@@ -24,6 +25,7 @@ jobs:
         run: |
             echo '${{ github.event.workflow_run.id }}'
             echo `${{ github.repository }}`
+
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
