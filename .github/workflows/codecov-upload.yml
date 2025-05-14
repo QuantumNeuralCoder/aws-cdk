@@ -23,7 +23,8 @@ jobs:
       - name: Debug event data
         run: |
             echo '${{ github.event.workflow_run.id }}'
-            echo `${{ github.repository }}`
+            echo '${{ github.repository }}'
+            echo '${{ toJSON(github.event.workflow_run) }}'
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
