@@ -18,6 +18,7 @@ Flags come in three types:
 | Flag | Summary | Since | Type |
 | ----- | ----- | ----- | ----- |
 | [@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration](#aws-cdkaws-ec2-alphauseresourceidforvpcv2migration) | When enabled, use resource IDs for VPC V2 migration | V2_NEXT | new default |
+| [@aws-cdk/aws-lambda:useCdkManagedLogGroup](#aws-cdkaws-lambdausecdkmanagedloggroup) | When enabled, CDK creates and manages loggroup for the lambda function | V2_NEXT | new default |
 | [@aws-cdk/core:newStyleStackSynthesis](#aws-cdkcorenewstylestacksynthesis) | Switch to new stack synthesis method which enables CI/CD | 2.0.0 | fix |
 | [@aws-cdk/core:stackRelativeExports](#aws-cdkcorestackrelativeexports) | Name exports based on the construct paths relative to the stack, rather than the global construct path | 2.0.0 | fix |
 | [@aws-cdk/aws-rds:lowercaseDbIdentifier](#aws-cdkaws-rdslowercasedbidentifier) | Force lowercasing of RDS Cluster names in CDK | 2.0.0 | fix |
@@ -100,8 +101,8 @@ Flags come in three types:
 | [@aws-cdk/pipelines:reduceCrossAccountActionRoleTrustScope](#aws-cdkpipelinesreducecrossaccountactionroletrustscope) | When enabled, scopes down the trust policy for the cross-account action role | 2.189.0 | new default |
 | [@aws-cdk/core:aspectPrioritiesMutating](#aws-cdkcoreaspectprioritiesmutating) | When set to true, Aspects added by the construct library on your behalf will be given a priority of MUTATING. | 2.189.1 | new default |
 | [@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions](#aws-cdks3-notificationsadds3trustkeypolicyforsnssubscriptions) | Add an S3 trust policy to a KMS key resource policy for SNS subscriptions. | 2.195.0 | fix |
-| [@aws-cdk/aws-s3:publicAccessBlockedByDefault](#aws-cdkaws-s3publicaccessblockedbydefault) | When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined. | V2NEXT | fix |
 | [@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway](#aws-cdkaws-ec2requireprivatesubnetsforegressonlyinternetgateway) | When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC. | V2NEXT | fix |
+| [@aws-cdk/aws-s3:publicAccessBlockedByDefault](#aws-cdkaws-s3publicaccessblockedbydefault) | When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined. | V2NEXT | fix |
 
 <!-- END table -->
 
@@ -186,8 +187,8 @@ The following json shows the current recommended set of flags, as `cdk init` wou
     "@aws-cdk/aws-dynamodb:retainTableReplica": true,
     "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": true,
     "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": true,
-    "@aws-cdk/aws-s3:publicAccessBlockedByDefault": true,
-    "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": true
+    "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": true,
+    "@aws-cdk/aws-s3:publicAccessBlockedByDefault": true
   }
 }
 ```
@@ -224,6 +225,7 @@ are migrating a v1 CDK project to v2, explicitly set any of these flags which do
 
 | Flag | Summary | Type | Since | v1 default | v2 default |
 | ----- | ----- | ----- | ----- | ----- | ----- |
+| [@aws-cdk/aws-lambda:useCdkManagedLogGroup](#aws-cdkaws-lambdausecdkmanagedloggroup) | When enabled, CDK creates and manages loggroup for the lambda function | new default |  | `false` | `true` |
 | [@aws-cdk/core:newStyleStackSynthesis](#aws-cdkcorenewstylestacksynthesis) | Switch to new stack synthesis method which enables CI/CD | fix | 1.39.0 | `false` | `true` |
 | [@aws-cdk/core:stackRelativeExports](#aws-cdkcorestackrelativeexports) | Name exports based on the construct paths relative to the stack, rather than the global construct path | fix | 1.58.0 | `false` | `true` |
 | [@aws-cdk/aws-rds:lowercaseDbIdentifier](#aws-cdkaws-rdslowercasedbidentifier) | Force lowercasing of RDS Cluster names in CDK | fix | 1.97.0 | `false` | `true` |
@@ -455,6 +457,31 @@ the two versions.
 | V2_NEXT | `false` | `false` |
 
 **Compatibility with old behavior:** Disable the feature flag to use getAtt references for VPC V2 migration
+
+
+### @aws-cdk/aws-lambda:useCdkManagedLogGroup
+
+*When enabled, CDK creates and manages loggroup for the lambda function*
+
+Flag type: New default behavior
+
+When this feature flag is enabled, CDK will create a loggroup for lambda function with default properties
+which supports CDK features Tag propagation, Property Injectors, Aspects
+if the cdk app doesnt pass a 'logRetention' or 'logGroup' explicitly. 
+LogGroups created via 'logRetention' do not support Tag propagation, Property Injectors, Aspects.
+LogGroups created via 'logGroup' created in CDK support Tag propagation, Property Injectors, Aspects.
+
+When this feature flag is disabled, a loggroup is created by Lambda service on first invocation 
+of the function (existing behavior). 
+LogGroups created in this way do not support Tag propagation, Property Injectors, Aspects.
+
+
+| Since | Default | Recommended |
+| ----- | ----- | ----- |
+| (not in v1) |  |  |
+| V2_NEXT | `true` | `true` |
+
+**Compatibility with old behavior:** Disable the feature flag to let lambda service create logGroup or specify logGroup or logRetention
 
 
 ### @aws-cdk/core:newStyleStackSynthesis
@@ -2109,6 +2136,21 @@ When this feature flag is enabled, a S3 trust policy will be added to the KMS ke
 | 2.195.0 | `false` | `true` |
 
 
+### @aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway
+
+*When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC.*
+
+Flag type: Backwards incompatible bugfix
+
+When this feature flag is enabled, EgressOnlyGateway resource will not be created when you create a vpc with only public subnets.
+
+
+| Since | Default | Recommended |
+| ----- | ----- | ----- |
+| (not in v1) |  |  |
+| V2NEXT | `false` | `true` |
+
+
 ### @aws-cdk/aws-s3:publicAccessBlockedByDefault
 
 *When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined.*
@@ -2119,21 +2161,6 @@ When BlockPublicAccess is not set at all, s3's default behavior will be to set a
 The previous behavior in cdk before this feature was; if only some of the BlockPublicAccessOptions were set (not all 4), then the ones undefined would default to false.
 This is counter intuitive to the console behavior where the options would start in true state and a user would uncheck the boxes as needed.
 The new behavior from this feature will allow a user, for example, to set 1 of the 4 BlockPublicAccessOpsions to false, and on deployment the other 3 will remain true.
-
-
-| Since | Default | Recommended |
-| ----- | ----- | ----- |
-| (not in v1) |  |  |
-| V2NEXT | `false` | `true` |
-
-
-### @aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway
-
-*When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC.*
-
-Flag type: Backwards incompatible bugfix
-
-When this feature flag is enabled, EgressOnlyGateway resource will not be created when you create a vpc with only public subnets.
 
 
 | Since | Default | Recommended |
