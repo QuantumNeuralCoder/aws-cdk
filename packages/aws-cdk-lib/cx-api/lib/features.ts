@@ -140,7 +140,7 @@ export const S3_TRUST_KEY_POLICY_FOR_SNS_SUBSCRIPTIONS = '@aws-cdk/s3-notificati
 export const EC2_REQUIRE_PRIVATE_SUBNETS_FOR_EGRESSONLYINTERNETGATEWAY = '@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway';
 export const USE_RESOURCEID_FOR_VPCV2_MIGRATION = '@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration';
 export const S3_PUBLIC_ACCESS_BLOCKED_BY_DEFAULT = '@aws-cdk/aws-s3:publicAccessBlockedByDefault';
-export const USE_CDK_MANAGED_LOGGROUP = '@aws-cdk/aws-lambda:useCdkManagedLogGroup';
+export const USE_CDK_MANAGED_LAMBDA_LOGGROUP = '@aws-cdk/aws-lambda:useCdkManagedLogGroup';
 
 export const FLAGS: Record<string, FlagInfo> = {
   //////////////////////////////////////////////////////////////////////
@@ -1620,7 +1620,7 @@ export const FLAGS: Record<string, FlagInfo> = {
   },
 
   //////////////////////////////////////////////////////////////////////
-  [USE_CDK_MANAGED_LOGGROUP]: {
+  [USE_CDK_MANAGED_LAMBDA_LOGGROUP]: {
     type: FlagType.ApiDefault,
     summary: 'When enabled, CDK creates and manages loggroup for the lambda function',
     detailsMd: `

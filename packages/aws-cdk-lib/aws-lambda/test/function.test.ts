@@ -5074,9 +5074,9 @@ describe('telemetry metadata', () => {
   });
 });
 
-describe('tag propagation to logGroup on FF USE_CDK_MANAGED_LOGGROUP enabled', () => {
-  it('log group inherits tags from function when USE_CDK_MANAGED_LOGGROUP is enabled', () => {
-    const app = new cdk.App({ context: { [cxapi.USE_CDK_MANAGED_LOGGROUP]: true } });
+describe('tag propagation to logGroup on FF USE_CDK_MANAGED_LAMBDA_LOGGROUP enabled', () => {
+  it('log group inherits tags from function when USE_CDK_MANAGED_LAMBDA_LOGGROUP is enabled', () => {
+    const app = new cdk.App({ context: { [cxapi.USE_CDK_MANAGED_LAMBDA_LOGGROUP]: true } });
     const stack = new cdk.Stack(app, 'Stack');
 
     const fn = new lambda.Function(stack, 'Function', {

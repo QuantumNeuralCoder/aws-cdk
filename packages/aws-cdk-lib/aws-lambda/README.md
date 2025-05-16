@@ -227,8 +227,8 @@ To use `applicationLogLevelV2` and/or `systemLogLevelV2` you must set `loggingFo
 |--------|-------------|-----------------|----------------|---------|-------|
 | **logRetention prop** | Legacy approach using Custom Resource | False | False | False | Does not support TPA |
 | **logGroup prop** | Explicitly supplied by user in CDK app | True | True | True | Full support for TPA |
-| **Lazy creation** | Lambda service creates logGroup on first invocation | False | False | False | Occurs when both logRetention and logGroup are undefined and USE_CDK_MANAGED_LOGGROUP is false |
-| **USE_CDK_MANAGED_LOGGROUP** | CDK Lambda function construct creates log group with default props | True | True | True | Feature flag must be enabled |
+| **Lazy creation** | Lambda service creates logGroup on first invocation | False | False | False | Occurs when both logRetention and logGroup are undefined and USE_CDK_MANAGED_LAMBDA_LOGGROUP is false |
+| **USE_CDK_MANAGED_LAMBDA_LOGGROUP** | CDK Lambda function construct creates log group with default props | True | True | True | Feature flag must be enabled |
 
 *TPA: Tag propagation, Prop Injection, Aspects*
 

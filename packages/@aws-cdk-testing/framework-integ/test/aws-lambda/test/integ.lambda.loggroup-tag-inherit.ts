@@ -30,7 +30,6 @@ const tag_assertion = integ.assertions.awsApiCall('CloudWatchLogs', 'listTagsLog
   logGroupName: `/aws/lambda/${fn.functionName}`,
 });
 
-// tag_assertion.provider.addPolicyStatementFromSdkCall('logs', 'listTagsLogGroup');
 tag_assertion.expect(ExpectedResult.objectLike({
   tags: {
     Environment: 'Test',

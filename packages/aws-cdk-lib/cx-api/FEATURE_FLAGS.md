@@ -475,6 +475,12 @@ When this feature flag is disabled, a loggroup is created by Lambda service on f
 of the function (existing behavior). 
 LogGroups created in this way do not support Tag propagation, Property Injectors, Aspects.
 
+DO NOT ENABLE: If you have and existing app defining a lambda function and 
+have not supplied a logGroup or logRetention prop and your lambda function has 
+executed at least once, the logGroup has been already created with the same name 
+so your deployment will start failing.
+Refer aws-lambda/README.md for more details on Customizing Log Group creation.
+
 
 | Since | Default | Recommended |
 | ----- | ----- | ----- |
